@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Divisor de Grilla — Instagram 3 Cuadros</title>
+<style>
+  :root{
+    --bg: #0e0e10;
+    --panel: #18181b;
+    --line: #2a2a2e;
+    --accent: #ff7a59;
+    --accent-soft: #ff7a5922;
+    --text: #f2f1ed;
+    --text-dim: #97969c;
+    --mono: 'SFMono-Regular', Consolas, monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    min-height:100vh;
+  }
+  header{
+    padding:28px 32px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  header h1{
+    margin:0 0 4px;
+    font-size:20px;
+    letter-spacing:-0.01em;
+    font-weight:600;
+  }
+  header p{
+    margin:0;
+    color:var(--text-dim);
+    font-size:13.5px;
+  }
+  .eyebrow{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    color:var(--accent);
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  main{
+    display:flex;
+    gap:28px;
+    padding:28px 32px 60px;
+    max-width:1280px;
+    margin:0 auto;
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+  .stage{
+    flex:1 1 600px;
+    min-width:320px;
+  }
+  .upload-zone{
+    border:1.5px dashed var(--line);
+    border-radius:10px;
+    padding:48px 20px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .upload-zone:hover, .upload-zone.drag{
+    border-color:var(--accent);
+    background:var(--accent-soft);
+  }
+  .upload-zone p{margin:6px 0 0; color:var(--text-dim); font-size:13px;}
+  .upload-zone strong{font-size:15px; font-weight:600;}
+  #fileInput{display:none;}
+
+  .canvas-wrap{
+    position:relative;
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    background:#000;
+    line-height:0;
+    display:none;
+  }
+  #frameCanvas{
+    width:100%;
+    display:block;
+    cursor:grab;
+    touch-action:none;
+  }
+  #frameCanvas.dragging{cursor:grabbing;}
+  .grid-lines{
+    position:absolute;
+    top:0;left:0;right:0;bottom:0;
+    pointer-events:none;
+    display:flex;
+  }
+  .grid-lines div{
+    flex:1;
+    border-right:1px solid rgba(255,255,255,0.35);
+  }
+  .grid-lines div:last-child{border-right:none;}
+
+  .controls{
+    display:none;
+    margin-top:18px;
+    gap:18px;
+    flex-direction:column;
+  }
+  .control-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .control-row label{
+    font-size:12.5px;
+    color:var(--text-dim);
+    width:64px;
+    flex-shrink:0;
+  }
+  input[type=range]{
+    flex:1;
+    accent-color:var(--accent);
+  }
+  .hint{
+    font-size:12.5px;
+    color:var(--text-dim);
+    margin-top:10px;
+    line-height:1.5;
+  }
+  .hint b{color:var(--text);}
+
+  button.primary{
+    margin-top:18px;
+    background:var(--accent);
+    color:#1a0f0a;
+    border:none;
+    padding:13px 22px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    letter-spacing:-0.01em;
+  }
+  button.primary:hover{filter:brightness(1.08);}
+  button.secondary{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:9px 14px;
+    border-radius:7px;
+    font-size:12.5px;
+    cursor:pointer;
+    margin-top:18px;
+  }
+  button.secondary:hover{border-color:var(--accent);}
+
+  .sidebar{
+    flex:0 0 300px;
+    min-width:260px;
+  }
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 18px 20px;
+    margin-bottom:16px;
+  }
+  .panel h2{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.07em;
+    color:var(--text-dim);
+    margin:0 0 12px;
+    font-weight:600;
+  }
+  .panel ol{
+    margin:0;
+    padding-left:18px;
+    font-size:13px;
+    line-height:1.65;
+    color:var(--text-dim);
+  }
+  .panel ol b{color:var(--text);}
+
+  #results{
+    display:none;
+    margin-top:6px;
+  }
+  .result-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin-bottom:10px;
+  }
+  .result-card img{
+    width:56px;height:56px;
+    object-fit:cover;
+    border-radius:5px;
+    flex-shrink:0;
+  }
+  .result-card .meta{flex:1;}
+  .result-card .meta .tag{
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:var(--accent);
+    letter-spacing:0.05em;
+  }
+  .result-card .meta .name{
+    font-size:12.5px;
+    color:var(--text-dim);
+  }
+  .result-card a{
+    font-size:12px;
+    color:var(--text);
+    text-decoration:none;
+    border:1px solid var(--line);
+    padding:6px 10px;
+    border-radius:6px;
+  }
+  .result-card a:hover{border-color:var(--accent);color:var(--accent);}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+
+<header>
+  <span class="eyebrow">Grilla de 3 — Feed</span>
+  <h1>Divisor de imagen para Instagram</h1>
+  <p>Encajá una imagen horizontal en el marco de 3 cuadros y exportala lista para postear.</p>
+</header>
+
+<main>
+  <div class="stage">
+    <div class="upload-zone" id="uploadZone">
+      <strong>Hacé clic o arrastrá tu imagen acá</strong>
+      <p>Funciona mejor con imágenes horizontales (panorámicas)</p>
+      <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="frameCanvas"></canvas>
+      <div class="grid-lines"><div></div><div></div><div></div></div>
+    </div>
+
+    <div class="controls" id="controls">
+      <div class="control-row">
+        <label>Zoom</label>
+        <input type="range" id="zoomSlider" min="0" max="100" value="0">
+      </div>
+      <div class="hint">Arrastrá la imagen dentro del marco para reposicionarla. Las líneas blancas marcan dónde se va a cortar.</div>
+      <div style="display:flex; gap:10px;">
+        <button class="primary" id="generateBtn">Generar las 3 partes</button>
+        <button class="secondary" id="resetBtn">Cambiar imagen</button>
+      </div>
+    </div>
+
+    <div id="results">
+      <button class="primary" id="downloadAllBtn" style="display:none; width:100%; margin-bottom:14px;">Descargar las 3 (ZIP)</button>
+      <div id="cardsContainer"></div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="panel">
+      <h2>Cómo usarlo</h2>
+      <ol>
+        <li>Subí una imagen horizontal.</li>
+        <li><b>Ajustá el zoom</b> y arrastrá hasta que encaje como querés dentro del marco 3:1.</li>
+        <li>Tocá <b>Generar las 3 partes</b> y descargá cada cuadro.</li>
+        <li>Subí las 3 a Instagram, pero <b>en orden inverso</b>: primero la parte derecha, después la del medio, y al final la izquierda — así el feed las muestra en el orden correcto.</li>
+      </ol>
+    </div>
+    <div class="panel">
+      <h2>Detalle técnico</h2>
+      <ol>
+        <li>Marco total: <b>3240 × 1080 px</b></li>
+        <li>Cada parte exportada: <b>1080 × 1080 px</b></li>
+        <li>Formato: <b>PNG</b>, calidad completa</li>
+      </ol>
+    </div>
+  </div>
+</main>
+
+<script>
+const FRAME_W = 3240, FRAME_H = 1080;
+const SQ = 1080;
+
+const uploadZone = document.getElementById('uploadZone');
+const fileInput = document.getElementById('fileInput');
+const canvasWrap = document.getElementById('canvasWrap');
+const canvas = document.getElementById('frameCanvas');
+const ctx = canvas.getContext('2d');
+const controls = document.getElementById('controls');
+const zoomSlider = document.getElementById('zoomSlider');
+const generateBtn = document.getElementById('generateBtn');
+const resetBtn = document.getElementById('resetBtn');
+const results = document.getElementById('results');
+const cardsContainer = document.getElementById('cardsContainer');
+const downloadAllBtn = document.getElementById('downloadAllBtn');
+let lastParts = [];
+
+canvas.width = FRAME_W;
+canvas.height = FRAME_H;
+
+let img = null;
+let coverScale = 1;
+let scale = 1;
+let offX = 0, offY = 0;
+let dragging = false;
+let dragStart = {x:0,y:0};
+let offStart = {x:0,y:0};
+
+uploadZone.addEventListener('click', () => fileInput.click());
+['dragenter','dragover'].forEach(ev=>{
+  uploadZone.addEventListener(ev, e=>{e.preventDefault(); uploadZone.classList.add('drag');});
+});
+['dragleave','drop'].forEach(ev=>{
+  uploadZone.addEventListener(ev, e=>{e.preventDefault(); uploadZone.classList.remove('drag');});
+});
+uploadZone.addEventListener('drop', e=>{
+  const f = e.dataTransfer.files[0];
+  if(f) loadFile(f);
+});
+fileInput.addEventListener('change', e=>{
+  if(e.target.files[0]) loadFile(e.target.files[0]);
+});
+
+function loadFile(file){
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    const image = new Image();
+    image.onload = ()=>{
+      img = image;
+      initTransform();
+      uploadZone.style.display = 'none';
+      canvasWrap.style.display = 'block';
+      controls.style.display = 'flex';
+      results.style.display = 'none';
+      results.innerHTML = '';
+      draw();
+    };
+    image.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function initTransform(){
+  coverScale = Math.max(FRAME_W / img.width, FRAME_H / img.height);
+  scale = coverScale;
+  offX = (FRAME_W - img.width*scale)/2;
+  offY = (FRAME_H - img.height*scale)/2;
+  zoomSlider.value = 0;
+}
+
+function clampOffset(){
+  const w = img.width*scale, h = img.height*scale;
+  offX = Math.min(0, Math.max(offX, FRAME_W - w));
+  offY = Math.min(0, Math.max(offY, FRAME_H - h));
+  if(w <= FRAME_W) offX = (FRAME_W - w)/2;
+  if(h <= FRAME_H) offY = (FRAME_H - h)/2;
+}
+
+function draw(){
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0,0,FRAME_W,FRAME_H);
+  if(img){
+    ctx.drawImage(img, offX, offY, img.width*scale, img.height*scale);
+  }
+}
+
+zoomSlider.addEventListener('input', ()=>{
+  if(!img) return;
+  const t = zoomSlider.value/100; // 0..1
+  const maxScale = coverScale * 3;
+  const centerX = FRAME_W/2, centerY = FRAME_H/2;
+  // image point currently at center of frame
+  const imgPx = (centerX - offX)/scale;
+  const imgPy = (centerY - offY)/scale;
+  scale = coverScale + (maxScale - coverScale)*t;
+  offX = centerX - imgPx*scale;
+  offY = centerY - imgPy*scale;
+  clampOffset();
+  draw();
+});
+
+function getCanvasCoords(clientX, clientY){
+  const rect = canvas.getBoundingClientRect();
+  const sx = FRAME_W/rect.width;
+  const sy = FRAME_H/rect.height;
+  return {x:(clientX-rect.left)*sx, y:(clientY-rect.top)*sy};
+}
+
+function startDrag(clientX, clientY){
+  if(!img) return;
+  dragging = true;
+  canvas.classList.add('dragging');
+  dragStart = {x:clientX, y:clientY};
+  offStart = {x:offX, y:offY};
+}
+function moveDrag(clientX, clientY){
+  if(!dragging) return;
+  const rect = canvas.getBoundingClientRect();
+  const sx = FRAME_W/rect.width;
+  const sy = FRAME_H/rect.height;
+  offX = offStart.x + (clientX-dragStart.x)*sx;
+  offY = offStart.y + (clientY-dragStart.y)*sy;
+  clampOffset();
+  draw();
+}
+function endDrag(){
+  dragging = false;
+  canvas.classList.remove('dragging');
+}
+
+canvas.addEventListener('mousedown', e=>startDrag(e.clientX, e.clientY));
+window.addEventListener('mousemove', e=>moveDrag(e.clientX, e.clientY));
+window.addEventListener('mouseup', endDrag);
+
+canvas.addEventListener('touchstart', e=>{
+  const t = e.touches[0];
+  startDrag(t.clientX, t.clientY);
+}, {passive:true});
+canvas.addEventListener('touchmove', e=>{
+  const t = e.touches[0];
+  moveDrag(t.clientX, t.clientY);
+}, {passive:true});
+canvas.addEventListener('touchend', endDrag);
+
+resetBtn.addEventListener('click', ()=>{
+  img = null;
+  fileInput.value = '';
+  uploadZone.style.display = 'block';
+  canvasWrap.style.display = 'none';
+  controls.style.display = 'none';
+  results.style.display = 'none';
+  cardsContainer.innerHTML = '';
+  downloadAllBtn.style.display = 'none';
+  lastParts = [];
+});
+
+generateBtn.addEventListener('click', ()=>{
+  if(!img) return;
+  cardsContainer.innerHTML = '';
+  results.style.display = 'block';
+
+  // labels: left/center/right in frame order, but instagram posting order is reversed
+  const parts = [
+    {x:0,       label:'Izquierda', postOrder:3},
+    {x:SQ,      label:'Centro',    postOrder:2},
+    {x:SQ*2,    label:'Derecha',   postOrder:1},
+  ];
+
+  // sort cards by posting order (post first = appears first in instructions)
+  const ordered = [...parts].sort((a,b)=>a.postOrder-b.postOrder);
+  lastParts = [];
+
+  ordered.forEach(p=>{
+    const c = document.createElement('canvas');
+    c.width = SQ; c.height = SQ;
+    const cctx = c.getContext('2d');
+    cctx.drawImage(canvas, p.x, 0, SQ, SQ, 0, 0, SQ, SQ);
+    const dataUrl = c.toDataURL('image/png');
+    lastParts.push({dataUrl, label:p.label, postOrder:p.postOrder});
+
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+      <img src="${dataUrl}" alt="${p.label}">
+      <div class="meta">
+        <div class="tag">SUBIR ${p.postOrder}ª — ${p.label.toUpperCase()}</div>
+        <div class="name">parte-${p.label.toLowerCase()}.png</div>
+      </div>
+      <a download="instagram-${p.label.toLowerCase()}.png" href="${dataUrl}">Descargar</a>
+    `;
+    cardsContainer.appendChild(card);
+  });
+
+  downloadAllBtn.style.display = 'block';
+});
+
+downloadAllBtn.addEventListener('click', async ()=>{
+  if(!lastParts.length) return;
+  downloadAllBtn.disabled = true;
+  downloadAllBtn.textContent = 'Preparando ZIP…';
+  try{
+    const zip = new JSZip();
+    lastParts.forEach(p=>{
+      const base64 = p.dataUrl.split(',')[1];
+      zip.file(`${p.postOrder}-${p.label.toLowerCase()}.png`, base64, {base64:true});
+    });
+    const blob = await zip.generateAsync({type:'blob'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'instagram-grid-3.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }catch(err){
+    alert('No se pudo generar el ZIP. Probá descargando cada imagen por separado.');
+    console.error(err);
+  }finally{
+    downloadAllBtn.disabled = false;
+    downloadAllBtn.textContent = 'Descargar las 3 (ZIP)';
+  }
+});
+</script>
+
+</body>
+</html>
