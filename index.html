@@ -342,7 +342,9 @@ function loadFile(file){
       canvasWrap.style.display = 'block';
       controls.style.display = 'flex';
       results.style.display = 'none';
-      results.innerHTML = '';
+      cardsContainer.innerHTML = '';
+      downloadAllBtn.style.display = 'none';
+      lastParts = [];
       draw();
     };
     image.src = ev.target.result;
