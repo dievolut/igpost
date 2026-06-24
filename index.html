@@ -2,266 +2,168 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Divisor de Grilla — Instagram 3 Cuadros</title>
+<title>Divisor de Grilla — Instagram Feed</title>
 <style>
   :root{
-    --bg: #0e0e10;
-    --panel: #18181b;
-    --line: #2a2a2e;
-    --accent: #ff7a59;
-    --accent-soft: #ff7a5922;
-    --text: #f2f1ed;
-    --text-dim: #97969c;
-    --mono: 'SFMono-Regular', Consolas, monospace;
+    --bg:#0e0e10;--panel:#18181b;--line:#2a2a2e;
+    --accent:#ff7a59;--accent-soft:#ff7a5922;
+    --text:#f2f1ed;--text-dim:#97969c;
+    --mono:'SFMono-Regular',Consolas,monospace;
   }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
-    min-height:100vh;
-  }
-  header{
-    padding:28px 32px 18px;
-    border-bottom:1px solid var(--line);
-  }
-  header h1{
-    margin:0 0 4px;
-    font-size:20px;
-    letter-spacing:-0.01em;
-    font-weight:600;
-  }
-  header p{
-    margin:0;
-    color:var(--text-dim);
-    font-size:13.5px;
-  }
-  .eyebrow{
-    display:inline-block;
-    font-family:var(--mono);
-    font-size:11px;
-    letter-spacing:0.08em;
-    color:var(--accent);
-    text-transform:uppercase;
-    margin-bottom:8px;
-  }
-  main{
-    display:flex;
-    gap:28px;
-    padding:28px 32px 60px;
-    max-width:1280px;
-    margin:0 auto;
-    align-items:flex-start;
-    flex-wrap:wrap;
-  }
-  .stage{
-    flex:1 1 600px;
-    min-width:320px;
-  }
-  .upload-zone{
-    border:1.5px dashed var(--line);
-    border-radius:10px;
-    padding:48px 20px;
-    text-align:center;
-    cursor:pointer;
-    transition:border-color .15s, background .15s;
-  }
-  .upload-zone:hover, .upload-zone.drag{
-    border-color:var(--accent);
-    background:var(--accent-soft);
-  }
-  .upload-zone p{margin:6px 0 0; color:var(--text-dim); font-size:13px;}
-  .upload-zone strong{font-size:15px; font-weight:600;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;min-height:100vh;}
+
+  header{padding:22px 28px 16px;border-bottom:1px solid var(--line);}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.09em;color:var(--accent);text-transform:uppercase;display:block;margin-bottom:5px;}
+  header h1{font-size:18px;font-weight:600;letter-spacing:-.01em;margin-bottom:3px;}
+  header p{font-size:12.5px;color:var(--text-dim);}
+
+  main{display:flex;gap:22px;padding:22px 28px 60px;max-width:1320px;margin:0 auto;align-items:flex-start;flex-wrap:wrap;}
+  .stage{flex:1 1 560px;min-width:300px;}
+  .sidebar{flex:0 0 272px;min-width:232px;}
+
+  /* ── Grid config ── */
+  .config-box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:14px;}
+  .config-box h2{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-dim);font-weight:600;margin-bottom:14px;}
+  .config-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .config-field label{display:block;font-size:11.5px;color:var(--text-dim);margin-bottom:6px;}
+  .config-field label b{color:var(--accent);}
+  .stepper{display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:7px;overflow:hidden;}
+  .stepper button{background:transparent;border:none;color:var(--text);font-size:17px;width:36px;height:36px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .stepper button:hover{background:var(--accent-soft);color:var(--accent);}
+  .stepper input{background:transparent;border:none;border-left:1px solid var(--line);border-right:1px solid var(--line);color:var(--text);text-align:center;font-size:15px;font-weight:600;width:44px;height:36px;outline:none;}
+  .presets{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
+  .preset-btn{background:transparent;border:1px solid var(--line);color:var(--text-dim);font-size:11.5px;padding:5px 10px;border-radius:6px;cursor:pointer;font-family:var(--mono);}
+  .preset-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .info-row{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
+  .badge{background:var(--bg);border:1px solid var(--line);border-radius:5px;font-family:var(--mono);font-size:10.5px;color:var(--text-dim);padding:4px 8px;}
+  .badge b{color:var(--text);}
+
+  /* ── Upload ── */
+  .upload-zone{border:1.5px dashed var(--line);border-radius:10px;padding:40px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;}
+  .upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:var(--accent-soft);}
+  .upload-zone strong{font-size:14.5px;font-weight:600;display:block;margin-bottom:5px;}
+  .upload-zone p{color:var(--text-dim);font-size:12.5px;}
   #fileInput{display:none;}
 
-  .canvas-wrap{
-    position:relative;
-    border-radius:10px;
-    overflow:hidden;
-    border:1px solid var(--line);
-    background:#000;
-    line-height:0;
-    display:none;
-  }
-  #frameCanvas{
-    width:100%;
-    display:block;
-    cursor:grab;
-    touch-action:none;
-  }
+  /* ── Canvas ── */
+  .canvas-wrap{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#000;line-height:0;display:none;}
+  #frameCanvas{width:100%;display:block;cursor:grab;touch-action:none;}
   #frameCanvas.dragging{cursor:grabbing;}
-  .grid-lines{
-    position:absolute;
-    top:0;left:0;right:0;bottom:0;
-    pointer-events:none;
-    display:flex;
-  }
-  .grid-lines div{
-    flex:1;
-    border-right:1px solid rgba(255,255,255,0.35);
-  }
-  .grid-lines div:last-child{border-right:none;}
+  .grid-overlay{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;}
+  .g-col{position:absolute;top:0;bottom:0;border-right:1.5px solid rgba(255,255,255,.38);}
+  .g-row{position:absolute;left:0;right:0;border-bottom:1.5px solid rgba(255,255,255,.38);}
 
-  .controls{
-    display:none;
-    margin-top:18px;
-    gap:18px;
-    flex-direction:column;
-  }
-  .control-row{
-    display:flex;
-    align-items:center;
-    gap:14px;
-  }
-  .control-row label{
-    font-size:12.5px;
-    color:var(--text-dim);
-    width:64px;
-    flex-shrink:0;
-  }
-  input[type=range]{
-    flex:1;
-    accent-color:var(--accent);
-  }
-  .hint{
-    font-size:12.5px;
-    color:var(--text-dim);
-    margin-top:10px;
-    line-height:1.5;
-  }
-  .hint b{color:var(--text);}
-
-  button.primary{
-    margin-top:18px;
-    background:var(--accent);
-    color:#1a0f0a;
-    border:none;
-    padding:13px 22px;
-    border-radius:8px;
-    font-size:14px;
-    font-weight:700;
-    cursor:pointer;
-    letter-spacing:-0.01em;
-  }
+  /* ── Controls ── */
+  .controls{display:none;margin-top:14px;gap:12px;flex-direction:column;}
+  .control-row{display:flex;align-items:center;gap:10px;}
+  .control-row label{font-size:12px;color:var(--text-dim);width:56px;flex-shrink:0;}
+  input[type=range]{flex:1;accent-color:var(--accent);}
+  .hint{font-size:12px;color:var(--text-dim);line-height:1.55;}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;}
+  button.primary{background:var(--accent);color:#1a0f0a;border:none;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-top:12px;}
   button.primary:hover{filter:brightness(1.08);}
-  button.secondary{
-    background:transparent;
-    border:1px solid var(--line);
-    color:var(--text);
-    padding:9px 14px;
-    border-radius:7px;
-    font-size:12.5px;
-    cursor:pointer;
-    margin-top:18px;
-  }
+  button.primary:disabled{opacity:.5;cursor:default;filter:none;}
+  button.secondary{background:transparent;border:1px solid var(--line);color:var(--text);padding:8px 13px;border-radius:7px;font-size:12px;cursor:pointer;margin-top:12px;}
   button.secondary:hover{border-color:var(--accent);}
 
-  .sidebar{
-    flex:0 0 300px;
-    min-width:260px;
-  }
-  .panel{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:18px 18px 20px;
-    margin-bottom:16px;
-  }
-  .panel h2{
-    font-size:12px;
-    text-transform:uppercase;
-    letter-spacing:0.07em;
-    color:var(--text-dim);
-    margin:0 0 12px;
-    font-weight:600;
-  }
-  .panel ol{
-    margin:0;
-    padding-left:18px;
-    font-size:13px;
-    line-height:1.65;
-    color:var(--text-dim);
-  }
-  .panel ol b{color:var(--text);}
-
-  #results{
-    display:none;
-    margin-top:6px;
-  }
-  .result-card{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:10px;
-    border:1px solid var(--line);
-    border-radius:8px;
-    margin-bottom:10px;
-  }
-  .result-card img{
-    width:56px;height:56px;
-    object-fit:cover;
-    border-radius:5px;
-    flex-shrink:0;
-  }
-  .result-card .meta{flex:1;}
-  .result-card .meta .tag{
-    font-family:var(--mono);
-    font-size:10.5px;
-    color:var(--accent);
-    letter-spacing:0.05em;
-  }
-  .result-card .meta .name{
-    font-size:12.5px;
-    color:var(--text-dim);
-  }
-  .result-card a{
-    font-size:12px;
-    color:var(--text);
-    text-decoration:none;
-    border:1px solid var(--line);
-    padding:6px 10px;
-    border-radius:6px;
-  }
+  /* ── Results ── */
+  #results{display:none;margin-top:10px;}
+  #downloadAllBtn{width:100%;margin-bottom:10px;}
+  .result-card{display:flex;align-items:center;gap:10px;padding:9px;border:1px solid var(--line);border-radius:8px;margin-bottom:7px;}
+  .result-card img{width:48px;height:60px;object-fit:cover;border-radius:4px;flex-shrink:0;}
+  .result-card .meta{flex:1;min-width:0;}
+  .result-card .tag{font-family:var(--mono);font-size:9.5px;color:var(--accent);letter-spacing:.05em;}
+  .result-card .name{font-size:11.5px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .result-card a{font-size:12px;color:var(--text);text-decoration:none;border:1px solid var(--line);padding:6px 10px;border-radius:6px;white-space:nowrap;flex-shrink:0;}
   .result-card a:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* ── Sidebar panels ── */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px 18px;margin-bottom:12px;}
+  .panel h2{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-dim);margin-bottom:10px;font-weight:600;}
+  .panel ol{padding-left:16px;font-size:12.5px;line-height:1.7;color:var(--text-dim);}
+  .panel ol b{color:var(--text);}
+  .panel .note{font-size:11.5px;color:var(--text-dim);margin-top:8px;line-height:1.5;border-top:1px solid var(--line);padding-top:8px;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
 
 <header>
-  <span class="eyebrow">Grilla de 3 — Feed</span>
-  <h1>Divisor de imagen para Instagram</h1>
-  <p>Encajá una imagen horizontal en el marco de 3 cuadros y exportala lista para postear.</p>
+  <span class="eyebrow">Instagram · Feed 4:5</span>
+  <h1>Divisor de Grilla — Feed</h1>
+  <p>Cada celda exporta en 1080×1350 px (4:5), el formato actual del feed de Instagram.</p>
 </header>
 
 <main>
   <div class="stage">
+
+    <!-- Config -->
+    <div class="config-box">
+      <h2>Configuración de grilla</h2>
+      <div class="config-grid">
+        <div class="config-field">
+          <label>Columnas <b id="colsLabel">3</b></label>
+          <div class="stepper">
+            <button id="colsMinus">−</button>
+            <input type="number" id="colsInput" value="3" min="1" max="12">
+            <button id="colsPlus">+</button>
+          </div>
+        </div>
+        <div class="config-field">
+          <label>Filas <b id="rowsLabel">1</b></label>
+          <div class="stepper">
+            <button id="rowsMinus">−</button>
+            <input type="number" id="rowsInput" value="1" min="1" max="12">
+            <button id="rowsPlus">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="presets">
+        <span style="font-size:11px;color:var(--text-dim);align-self:center;margin-right:2px;">Presets:</span>
+        <button class="preset-btn" data-cols="3" data-rows="1">3×1</button>
+        <button class="preset-btn" data-cols="3" data-rows="2">3×2</button>
+        <button class="preset-btn" data-cols="3" data-rows="3">3×3</button>
+        <button class="preset-btn" data-cols="4" data-rows="4">4×4</button>
+        <button class="preset-btn" data-cols="2" data-rows="2">2×2</button>
+        <button class="preset-btn" data-cols="6" data-rows="2">6×2</button>
+      </div>
+      <div class="info-row" id="infoRow">
+        <div class="badge">Marco: <b id="badgeFrame">3240×1350 px</b></div>
+        <div class="badge">Celdas: <b id="badgeCells">3</b></div>
+        <div class="badge">Cada celda: <b>1080×1350 px</b></div>
+      </div>
+    </div>
+
+    <!-- Upload -->
     <div class="upload-zone" id="uploadZone">
       <strong>Hacé clic o arrastrá tu imagen acá</strong>
-      <p>Funciona mejor con imágenes horizontales (panorámicas)</p>
+      <p>PNG, JPG o WEBP — la imagen se ajusta al marco automáticamente</p>
       <input type="file" id="fileInput" accept="image/*">
     </div>
 
+    <!-- Canvas -->
     <div class="canvas-wrap" id="canvasWrap">
       <canvas id="frameCanvas"></canvas>
-      <div class="grid-lines"><div></div><div></div><div></div></div>
+      <div class="grid-overlay" id="gridOverlay"></div>
     </div>
 
+    <!-- Controls -->
     <div class="controls" id="controls">
       <div class="control-row">
         <label>Zoom</label>
         <input type="range" id="zoomSlider" min="0" max="100" value="0">
       </div>
-      <div class="hint">Arrastrá la imagen dentro del marco para reposicionarla. Las líneas blancas marcan dónde se va a cortar.</div>
-      <div style="display:flex; gap:10px;">
-        <button class="primary" id="generateBtn">Generar las 3 partes</button>
+      <div class="hint">Arrastrá la imagen para reposicionarla. Las líneas blancas marcan exactamente dónde se corta.</div>
+      <div class="btn-row">
+        <button class="primary" id="generateBtn">Generar partes</button>
         <button class="secondary" id="resetBtn">Cambiar imagen</button>
       </div>
     </div>
 
+    <!-- Results -->
     <div id="results">
-      <button class="primary" id="downloadAllBtn" style="display:none; width:100%; margin-bottom:14px;">Descargar las 3 (ZIP)</button>
+      <button class="primary" id="downloadAllBtn" style="display:none;"></button>
       <div id="cardsContainer"></div>
     </div>
   </div>
@@ -270,250 +172,294 @@
     <div class="panel">
       <h2>Cómo usarlo</h2>
       <ol>
-        <li>Subí una imagen horizontal.</li>
-        <li><b>Ajustá el zoom</b> y arrastrá hasta que encaje como querés dentro del marco 3:1.</li>
-        <li>Tocá <b>Generar las 3 partes</b> y descargá cada cuadro.</li>
-        <li>Subí las 3 a Instagram, pero <b>en orden inverso</b>: primero la parte derecha, después la del medio, y al final la izquierda — así el feed las muestra en el orden correcto.</li>
+        <li>Configurá la grilla (columnas × filas) o elegí un preset.</li>
+        <li>Subí tu imagen y ajustá zoom y posición.</li>
+        <li>Tocá <b>Generar partes</b> y descargá el ZIP.</li>
+        <li>Subí las imágenes a Instagram <b>en el orden indicado</b> — el feed muestra lo más nuevo primero (arriba a la izquierda).</li>
       </ol>
+      <div class="note">
+        El orden de subida está en el nombre de cada archivo: <b>01-</b>, <b>02-</b>, etc. Subí el 01 primero.
+      </div>
     </div>
     <div class="panel">
-      <h2>Detalle técnico</h2>
+      <h2>¿Por qué 4:5?</h2>
       <ol>
-        <li>Marco total: <b>3240 × 1080 px</b></li>
-        <li>Cada parte exportada: <b>1080 × 1080 px</b></li>
-        <li>Formato: <b>PNG</b>, calidad completa</li>
+        <li>Instagram recortó el feed cuadrado a <b>4:5 vertical</b> (1080×1350 px).</li>
+        <li>Es el formato que ocupa <b>más espacio</b> en pantalla y tiene mejor alcance.</li>
+        <li>Si subís cuadrado (1:1), Instagram lo muestra igual pero con barras laterales en algunos dispositivos.</li>
       </ol>
     </div>
   </div>
 </main>
 
 <script>
-const FRAME_W = 3240, FRAME_H = 1080;
-const SQ = 1080;
+const CELL_W = 1080, CELL_H = 1350; // 4:5
 
-const uploadZone = document.getElementById('uploadZone');
-const fileInput = document.getElementById('fileInput');
-const canvasWrap = document.getElementById('canvasWrap');
-const canvas = document.getElementById('frameCanvas');
-const ctx = canvas.getContext('2d');
-const controls = document.getElementById('controls');
-const zoomSlider = document.getElementById('zoomSlider');
-const generateBtn = document.getElementById('generateBtn');
-const resetBtn = document.getElementById('resetBtn');
-const results = document.getElementById('results');
-const cardsContainer = document.getElementById('cardsContainer');
-const downloadAllBtn = document.getElementById('downloadAllBtn');
-let lastParts = [];
+let cols = 3, rows = 1;
+let img = null, coverScale=1, scale=1, offX=0, offY=0;
+let dragging=false, dragStart={x:0,y:0}, offStart={x:0,y:0};
+let lastParts=[];
 
-canvas.width = FRAME_W;
-canvas.height = FRAME_H;
+const uploadZone    = document.getElementById('uploadZone');
+const fileInput     = document.getElementById('fileInput');
+const canvasWrap    = document.getElementById('canvasWrap');
+const canvas        = document.getElementById('frameCanvas');
+const ctx           = canvas.getContext('2d');
+const gridOverlay   = document.getElementById('gridOverlay');
+const controls      = document.getElementById('controls');
+const zoomSlider    = document.getElementById('zoomSlider');
+const generateBtn   = document.getElementById('generateBtn');
+const resetBtn      = document.getElementById('resetBtn');
+const results       = document.getElementById('results');
+const cardsContainer= document.getElementById('cardsContainer');
+const downloadAllBtn= document.getElementById('downloadAllBtn');
+const colsInput     = document.getElementById('colsInput');
+const rowsInput     = document.getElementById('rowsInput');
 
-let img = null;
-let coverScale = 1;
-let scale = 1;
-let offX = 0, offY = 0;
-let dragging = false;
-let dragStart = {x:0,y:0};
-let offStart = {x:0,y:0};
+/* ── Stepper helpers ── */
+function setupStepper(inputEl, minusEl, plusEl, labelEl, min, max, onChange){
+  const update = (val) => {
+    val = Math.max(min, Math.min(max, val));
+    inputEl.value = val;
+    if(labelEl) labelEl.textContent = val;
+    onChange(val);
+  };
+  minusEl.addEventListener('click', () => update(parseInt(inputEl.value)-1));
+  plusEl.addEventListener('click',  () => update(parseInt(inputEl.value)+1));
+  inputEl.addEventListener('input', () => {
+    const v = parseInt(inputEl.value);
+    if(!isNaN(v)) update(v);
+  });
+}
 
-uploadZone.addEventListener('click', () => fileInput.click());
-['dragenter','dragover'].forEach(ev=>{
-  uploadZone.addEventListener(ev, e=>{e.preventDefault(); uploadZone.classList.add('drag');});
+setupStepper(colsInput,
+  document.getElementById('colsMinus'), document.getElementById('colsPlus'),
+  document.getElementById('colsLabel'), 1, 12,
+  val => { cols = val; onConfigChange(); }
+);
+setupStepper(rowsInput,
+  document.getElementById('rowsMinus'), document.getElementById('rowsPlus'),
+  document.getElementById('rowsLabel'), 1, 12,
+  val => { rows = val; onConfigChange(); }
+);
+
+document.querySelectorAll('.preset-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    cols = parseInt(btn.dataset.cols);
+    rows = parseInt(btn.dataset.rows);
+    colsInput.value = cols; document.getElementById('colsLabel').textContent = cols;
+    rowsInput.value = rows; document.getElementById('rowsLabel').textContent = rows;
+    onConfigChange();
+  });
 });
-['dragleave','drop'].forEach(ev=>{
-  uploadZone.addEventListener(ev, e=>{e.preventDefault(); uploadZone.classList.remove('drag');});
-});
-uploadZone.addEventListener('drop', e=>{
-  const f = e.dataTransfer.files[0];
-  if(f) loadFile(f);
-});
-fileInput.addEventListener('change', e=>{
-  if(e.target.files[0]) loadFile(e.target.files[0]);
-});
+
+function onConfigChange(){
+  updateBadges();
+  if(img){ canvas.width=frameW(); canvas.height=frameH(); initTransform(); buildGrid(); draw(); }
+  resetResults();
+}
+
+function frameW(){ return cols * CELL_W; }
+function frameH(){ return rows * CELL_H; }
+
+function updateBadges(){
+  document.getElementById('badgeFrame').textContent = `${frameW()}×${frameH()} px`;
+  document.getElementById('badgeCells').textContent = cols * rows;
+}
+updateBadges();
+
+/* ── Grid overlay ── */
+function buildGrid(){
+  gridOverlay.innerHTML='';
+  for(let c=1;c<cols;c++){
+    const d=document.createElement('div');
+    d.className='g-col';
+    d.style.left=(c/cols*100)+'%';
+    gridOverlay.appendChild(d);
+  }
+  for(let r=1;r<rows;r++){
+    const d=document.createElement('div');
+    d.className='g-row';
+    d.style.top=(r/rows*100)+'%';
+    gridOverlay.appendChild(d);
+  }
+}
+
+/* ── Upload ── */
+uploadZone.addEventListener('click',()=>fileInput.click());
+['dragenter','dragover'].forEach(ev=>uploadZone.addEventListener(ev,e=>{e.preventDefault();uploadZone.classList.add('drag');}));
+['dragleave','drop'].forEach(ev=>uploadZone.addEventListener(ev,e=>{e.preventDefault();uploadZone.classList.remove('drag');}));
+uploadZone.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)loadFile(f);});
+fileInput.addEventListener('change',e=>{if(e.target.files[0])loadFile(e.target.files[0]);});
 
 function loadFile(file){
-  const reader = new FileReader();
-  reader.onload = ev=>{
-    const image = new Image();
-    image.onload = ()=>{
-      img = image;
-      initTransform();
-      uploadZone.style.display = 'none';
-      canvasWrap.style.display = 'block';
-      controls.style.display = 'flex';
-      results.style.display = 'none';
-      cardsContainer.innerHTML = '';
-      downloadAllBtn.style.display = 'none';
-      lastParts = [];
-      draw();
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const image=new Image();
+    image.onload=()=>{
+      img=image;
+      canvas.width=frameW(); canvas.height=frameH();
+      initTransform(); buildGrid();
+      uploadZone.style.display='none';
+      canvasWrap.style.display='block';
+      controls.style.display='flex';
+      const total=cols*rows;
+      generateBtn.textContent=`Generar ${total} parte${total>1?'s':''}`;
+      resetResults(); draw();
     };
-    image.src = ev.target.result;
+    image.src=ev.target.result;
   };
   reader.readAsDataURL(file);
 }
 
+/* ── Transform ── */
 function initTransform(){
-  coverScale = Math.max(FRAME_W / img.width, FRAME_H / img.height);
+  coverScale = Math.max(frameW()/img.width, frameH()/img.height);
   scale = coverScale;
-  offX = (FRAME_W - img.width*scale)/2;
-  offY = (FRAME_H - img.height*scale)/2;
-  zoomSlider.value = 0;
+  offX = (frameW()-img.width*scale)/2;
+  offY = (frameH()-img.height*scale)/2;
+  zoomSlider.value=0;
 }
 
 function clampOffset(){
-  const w = img.width*scale, h = img.height*scale;
-  offX = Math.min(0, Math.max(offX, FRAME_W - w));
-  offY = Math.min(0, Math.max(offY, FRAME_H - h));
-  if(w <= FRAME_W) offX = (FRAME_W - w)/2;
-  if(h <= FRAME_H) offY = (FRAME_H - h)/2;
+  const fw=frameW(), fh=frameH();
+  const w=img.width*scale, h=img.height*scale;
+  offX = Math.min(0, Math.max(offX, fw-w));
+  offY = Math.min(0, Math.max(offY, fh-h));
+  if(w<=fw) offX=(fw-w)/2;
+  if(h<=fh) offY=(fh-h)/2;
 }
 
 function draw(){
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0,0,FRAME_W,FRAME_H);
-  if(img){
-    ctx.drawImage(img, offX, offY, img.width*scale, img.height*scale);
+  ctx.fillStyle='#000';
+  ctx.fillRect(0,0,frameW(),frameH());
+  if(img) ctx.drawImage(img,offX,offY,img.width*scale,img.height*scale);
+}
+
+zoomSlider.addEventListener('input',()=>{
+  if(!img) return;
+  const t=zoomSlider.value/100;
+  const maxS=coverScale*4;
+  const cx=frameW()/2, cy=frameH()/2;
+  const ipx=(cx-offX)/scale, ipy=(cy-offY)/scale;
+  scale=coverScale+(maxS-coverScale)*t;
+  offX=cx-ipx*scale; offY=cy-ipy*scale;
+  clampOffset(); draw();
+});
+
+/* ── Drag ── */
+function startDrag(cx,cy){if(!img)return;dragging=true;canvas.classList.add('dragging');dragStart={x:cx,y:cy};offStart={x:offX,y:offY};}
+function moveDrag(cx,cy){
+  if(!dragging)return;
+  const rect=canvas.getBoundingClientRect();
+  offX=offStart.x+(cx-dragStart.x)*(frameW()/rect.width);
+  offY=offStart.y+(cy-dragStart.y)*(frameH()/rect.height);
+  clampOffset();draw();
+}
+function endDrag(){dragging=false;canvas.classList.remove('dragging');}
+canvas.addEventListener('mousedown',e=>startDrag(e.clientX,e.clientY));
+window.addEventListener('mousemove',e=>moveDrag(e.clientX,e.clientY));
+window.addEventListener('mouseup',endDrag);
+canvas.addEventListener('touchstart',e=>{const t=e.touches[0];startDrag(t.clientX,t.clientY);},{passive:true});
+canvas.addEventListener('touchmove',e=>{const t=e.touches[0];moveDrag(t.clientX,t.clientY);},{passive:true});
+canvas.addEventListener('touchend',endDrag);
+
+/* ── Reset ── */
+resetBtn.addEventListener('click',()=>{
+  img=null; fileInput.value='';
+  uploadZone.style.display='block';
+  canvasWrap.style.display='none';
+  controls.style.display='none';
+  resetResults();
+});
+function resetResults(){
+  results.style.display='none';
+  cardsContainer.innerHTML='';
+  downloadAllBtn.style.display='none';
+  lastParts=[];
+}
+
+/* ── Generate ── */
+generateBtn.addEventListener('click',()=>{
+  if(!img) return;
+  cardsContainer.innerHTML='';
+  results.style.display='block';
+  lastParts=[];
+
+  const total = cols * rows;
+  const colLabels = ['Izq','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12'];
+  colLabels[1]='Cen'; colLabels[cols-1]='Der';
+
+  // Cells: row 0 = top, col 0 = left
+  // Instagram: newest = top-left → post LAST
+  // So postOrder = total - linearIndex  (1 = post first = bottom-right)
+  const cells=[];
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      const idx=r*cols+c;
+      const postOrder=total-idx;
+      const rowTag=rows>1?`F${r+1} `:'';
+      const colTag=cols<=3
+        ? ['Izquierda','Centro','Derecha'][c] || `C${c+1}`
+        : `C${c+1}`;
+      const label=`${rowTag}${colTag}`;
+      cells.push({x:c*CELL_W, y:r*CELL_H, label, postOrder});
+    }
   }
-}
 
-zoomSlider.addEventListener('input', ()=>{
-  if(!img) return;
-  const t = zoomSlider.value/100; // 0..1
-  const maxScale = coverScale * 3;
-  const centerX = FRAME_W/2, centerY = FRAME_H/2;
-  // image point currently at center of frame
-  const imgPx = (centerX - offX)/scale;
-  const imgPy = (centerY - offY)/scale;
-  scale = coverScale + (maxScale - coverScale)*t;
-  offX = centerX - imgPx*scale;
-  offY = centerY - imgPy*scale;
-  clampOffset();
-  draw();
-});
+  // Sort by postOrder asc so first card = first to post
+  cells.sort((a,b)=>a.postOrder-b.postOrder);
 
-function getCanvasCoords(clientX, clientY){
-  const rect = canvas.getBoundingClientRect();
-  const sx = FRAME_W/rect.width;
-  const sy = FRAME_H/rect.height;
-  return {x:(clientX-rect.left)*sx, y:(clientY-rect.top)*sy};
-}
+  cells.forEach(p=>{
+    const c=document.createElement('canvas');
+    c.width=CELL_W; c.height=CELL_H;
+    const cctx=c.getContext('2d');
+    cctx.drawImage(canvas, p.x, p.y, CELL_W, CELL_H, 0, 0, CELL_W, CELL_H);
+    const dataUrl=c.toDataURL('image/png');
+    const order=String(p.postOrder).padStart(2,'0');
+    const fname=`${order}-${p.label.replace(/ /g,'-').toLowerCase()}.png`;
+    lastParts.push({dataUrl, fname, label:p.label, postOrder:p.postOrder});
 
-function startDrag(clientX, clientY){
-  if(!img) return;
-  dragging = true;
-  canvas.classList.add('dragging');
-  dragStart = {x:clientX, y:clientY};
-  offStart = {x:offX, y:offY};
-}
-function moveDrag(clientX, clientY){
-  if(!dragging) return;
-  const rect = canvas.getBoundingClientRect();
-  const sx = FRAME_W/rect.width;
-  const sy = FRAME_H/rect.height;
-  offX = offStart.x + (clientX-dragStart.x)*sx;
-  offY = offStart.y + (clientY-dragStart.y)*sy;
-  clampOffset();
-  draw();
-}
-function endDrag(){
-  dragging = false;
-  canvas.classList.remove('dragging');
-}
-
-canvas.addEventListener('mousedown', e=>startDrag(e.clientX, e.clientY));
-window.addEventListener('mousemove', e=>moveDrag(e.clientX, e.clientY));
-window.addEventListener('mouseup', endDrag);
-
-canvas.addEventListener('touchstart', e=>{
-  const t = e.touches[0];
-  startDrag(t.clientX, t.clientY);
-}, {passive:true});
-canvas.addEventListener('touchmove', e=>{
-  const t = e.touches[0];
-  moveDrag(t.clientX, t.clientY);
-}, {passive:true});
-canvas.addEventListener('touchend', endDrag);
-
-resetBtn.addEventListener('click', ()=>{
-  img = null;
-  fileInput.value = '';
-  uploadZone.style.display = 'block';
-  canvasWrap.style.display = 'none';
-  controls.style.display = 'none';
-  results.style.display = 'none';
-  cardsContainer.innerHTML = '';
-  downloadAllBtn.style.display = 'none';
-  lastParts = [];
-});
-
-generateBtn.addEventListener('click', ()=>{
-  if(!img) return;
-  cardsContainer.innerHTML = '';
-  results.style.display = 'block';
-
-  // labels: left/center/right in frame order, but instagram posting order is reversed
-  const parts = [
-    {x:0,       label:'Izquierda', postOrder:3},
-    {x:SQ,      label:'Centro',    postOrder:2},
-    {x:SQ*2,    label:'Derecha',   postOrder:1},
-  ];
-
-  // sort cards by posting order (post first = appears first in instructions)
-  const ordered = [...parts].sort((a,b)=>a.postOrder-b.postOrder);
-  lastParts = [];
-
-  ordered.forEach(p=>{
-    const c = document.createElement('canvas');
-    c.width = SQ; c.height = SQ;
-    const cctx = c.getContext('2d');
-    cctx.drawImage(canvas, p.x, 0, SQ, SQ, 0, 0, SQ, SQ);
-    const dataUrl = c.toDataURL('image/png');
-    lastParts.push({dataUrl, label:p.label, postOrder:p.postOrder});
-
-    const card = document.createElement('div');
-    card.className = 'result-card';
-    card.innerHTML = `
+    const card=document.createElement('div');
+    card.className='result-card';
+    card.innerHTML=`
       <img src="${dataUrl}" alt="${p.label}">
       <div class="meta">
-        <div class="tag">SUBIR ${p.postOrder}ª — ${p.label.toUpperCase()}</div>
-        <div class="name">parte-${p.label.toLowerCase()}.png</div>
+        <div class="tag">SUBIR ${p.postOrder}º DE ${total} — ${p.label.toUpperCase()}</div>
+        <div class="name">${fname}</div>
       </div>
-      <a download="instagram-${p.label.toLowerCase()}.png" href="${dataUrl}">Descargar</a>
+      <a download="${fname}" href="${dataUrl}">↓</a>
     `;
     cardsContainer.appendChild(card);
   });
 
-  downloadAllBtn.style.display = 'block';
+  downloadAllBtn.style.display='block';
+  downloadAllBtn.textContent=`⬇ Descargar las ${total} imágenes (ZIP)`;
 });
 
-downloadAllBtn.addEventListener('click', async ()=>{
+/* ── ZIP ── */
+downloadAllBtn.addEventListener('click',async()=>{
   if(!lastParts.length) return;
-  downloadAllBtn.disabled = true;
-  downloadAllBtn.textContent = 'Preparando ZIP…';
+  downloadAllBtn.disabled=true;
+  downloadAllBtn.textContent='Preparando ZIP…';
   try{
-    const zip = new JSZip();
-    lastParts.forEach(p=>{
-      const base64 = p.dataUrl.split(',')[1];
-      zip.file(`${p.postOrder}-${p.label.toLowerCase()}.png`, base64, {base64:true});
-    });
-    const blob = await zip.generateAsync({type:'blob'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'instagram-grid-3.zip';
-    document.body.appendChild(a);
-    a.click();
+    const zip=new JSZip();
+    lastParts.forEach(p=>zip.file(p.fname, p.dataUrl.split(',')[1], {base64:true}));
+    const blob=await zip.generateAsync({type:'blob'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=`instagram-grid-${cols}x${rows}.zip`;
+    document.body.appendChild(a); a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }catch(err){
-    alert('No se pudo generar el ZIP. Probá descargando cada imagen por separado.');
+    alert('Error al generar el ZIP. Descargá cada imagen individualmente.');
     console.error(err);
   }finally{
-    downloadAllBtn.disabled = false;
-    downloadAllBtn.textContent = 'Descargar las 3 (ZIP)';
+    downloadAllBtn.disabled=false;
+    downloadAllBtn.textContent=`⬇ Descargar las ${lastParts.length} imágenes (ZIP)`;
   }
 });
 </script>
-
 </body>
 </html>
